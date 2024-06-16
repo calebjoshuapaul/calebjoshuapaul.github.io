@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	base: "/calebjoshuapaul.github.io/dist/",
+	base: "./",
 	plugins: [react()],
 	assetsInclude: ["**/*.glb"],
 });
