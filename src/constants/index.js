@@ -1,10 +1,8 @@
 import thinkusable_logo from "../assets/images/thinkusable.png";
 import urbanmatrix_logo from "../assets/images/urbanmatrix_logo.png";
 import {
-	car,
 	contact,
 	css,
-	estate,
 	express,
 	git,
 	github,
@@ -16,15 +14,15 @@ import {
 	mui,
 	nextjs,
 	nodejs,
-	pricewise,
 	react,
 	redux,
 	sass,
-	snapgram,
-	summiz,
 	tailwindcss,
-	threads,
 	typescript,
+	ecommsite,
+	spaceXlog,
+	cryptotracker,
+	nextconsole,
 } from "../assets/icons";
 
 export const skills = [
@@ -186,67 +184,51 @@ export const socialLinks = [
 	{
 		name: "Contact",
 		iconUrl: contact,
-		link: "/contact",
+		link: "mailto:calebjoshuapaul@gmail.com",
 	},
 	{
 		name: "GitHub",
 		iconUrl: github,
-		link: "https://github.com/YourGitHubUsername",
+		link: "https://github.com/calebjoshuapaul/",
 	},
 	{
 		name: "LinkedIn",
 		iconUrl: linkedin,
-		link: "https://www.linkedin.com/in/YourLinkedInUsername",
+		link: "https://www.linkedin.com/in/calebjoshuapaul/",
 	},
 ];
 
 export const projects = [
 	{
-		iconUrl: pricewise,
-		theme: "btn-back-red",
-		name: "Amazon Price Tracker",
-		description:
-			"Developed a web application that tracks and notifies users of price changes for products on Amazon, helping users find the best deals.",
-		link: "https://github.com/adrianhajdin/pricewise",
-	},
-	{
-		iconUrl: threads,
-		theme: "btn-back-green",
-		name: "Full Stack Threads Clone",
-		description:
-			'Created a full-stack replica of the popular discussion platform "Threads," enabling users to post and engage in threaded conversations.',
-		link: "https://github.com/adrianhajdin/threads",
-	},
-	{
-		iconUrl: car,
-		theme: "btn-back-blue",
-		name: "Car Finding App",
-		description:
-			"Designed and built a mobile app for finding and comparing cars on the market, streamlining the car-buying process.",
-		link: "https://github.com/adrianhajdin/project_next13_car_showcase",
-	},
-	{
-		iconUrl: snapgram,
-		theme: "btn-back-pink",
-		name: "Full Stack Instagram Clone",
-		description:
-			"Built a complete clone of Instagram, allowing users to share photos and connect with friends in a familiar social media environment.",
-		link: "https://github.com/adrianhajdin/social_media_app",
-	},
-	{
-		iconUrl: estate,
-		theme: "btn-back-black",
-		name: "Real-Estate Application",
-		description:
-			"Developed a web application for real estate listings, facilitating property searches and connecting buyers with sellers.",
-		link: "https://github.com/adrianhajdin/projects_realestate",
-	},
-	{
-		iconUrl: summiz,
+		iconUrl: nextconsole,
 		theme: "btn-back-yellow",
-		name: "AI Summarizer Application",
+		name: "NextConsole",
 		description:
-			"App that leverages AI to automatically generate concise & informative summaries from lengthy text content, or blogs.",
-		link: "https://github.com/adrianhajdin/project_ai_summarizer",
+			"Worked on involved developing a sophisticated drone management cloud-based user interface. This innovative platform allows pilots and organizations to seamlessly plan missions and initiate flights with just the click of a button, all via the cloud. The UI is designed to be intuitive and user-friendly, enabling users to easily coordinate complex flight plans, monitor drone statuses, and ensure compliance with aviation regulations. The project required extensive collaboration with cross-functional teams to integrate real-time data processing, secure cloud storage, and advanced analytics, resulting in a robust system that enhances operational efficiency and mission accuracy for drone operators.",
+		link: "https://drive.google.com/file/d/1kZtAnwFNIWGOhPzWqYZ_vZxZiTm9a2EU/view",
+	},
+	{
+		iconUrl: cryptotracker,
+		theme: "btn-back-red",
+		name: "Crypto Price Tracker",
+		description:
+			"Developed a cryptocurrency price tracker application using Cloudflare Workers, providing real-time updates with minimal latency. The project involved integrating multiple APIs, designing an intuitive user interface, and ensuring robust security, which enhanced my skills in web development, cloud computing, and real-time data processing.",
+		link: "https://github.com/calebjoshuapaul/crypto-price-tracker",
+	},
+	{
+		iconUrl: spaceXlog,
+		theme: "btn-back-green",
+		name: "Space X Launch Log",
+		description:
+			"This web app lets the user view the launch log of SpaceX Sattelites, sort upcoming, successfull or failed launches and also to search launches between a set range. Click on a pariticular launch to view more details of the launch.",
+		link: "https://github.com/calebjoshuapaul/spacex-project",
+	},
+	{
+		iconUrl: ecommsite,
+		theme: "btn-back-black",
+		name: "E-comm site",
+		description:
+			"This web app has all the functionality of a real world E-comm app, To install and view on your local machine fork and clone the project and run: npm install, to install all its dependencies.",
+		link: "https://github.com/calebjoshuapaul/demo-ecommerce-site?tab=readme-ov-file#e-comm-site",
 	},
 ];
