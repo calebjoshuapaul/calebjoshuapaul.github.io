@@ -22,10 +22,16 @@ const InfoBox = ({ text, link, btnText }) => {
 };
 const renderContent = {
 	1: (
-		<h1 className="sm:text-xl sm:leading-snug text-center neo-brutalism-blue py-4 px-8 text-white mx-5">
-			Hi, I am <span className="font-semibold">Caleb</span>👋
-			<br />A Software Engineer from Bangalore
-		</h1>
+		<div className="neo-brutalism-blue">
+			<h1 className="sm:text-xl sm:leading-snug text-center  py-4 px-8 text-white mx-5">
+				Hi, I am <span className="font-semibold">Caleb</span>👋
+				<br />A Software Engineer from Bangalore
+			</h1>
+			<p className="text-center text-xs text-white/70 font-semibold">
+				(Hint: Use arrow keys or mouse to navigate)
+			</p>
+			<br />
+		</div>
 	),
 	2: (
 		<InfoBox
