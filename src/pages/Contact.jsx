@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 
 import Fox from "../models/Fox";
 import Loader from "../components/Loader";
+import { useToast } from "../components/ui/use-toast";
 
 function Contact() {
 	const formRef = useRef(null);
@@ -13,6 +14,7 @@ function Contact() {
 		email: "",
 		message: "",
 	});
+	const { toast } = useToast();
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentAnimation, setCurrentAnimation] = useState("idle");
 
@@ -55,11 +57,21 @@ function Contact() {
 						message: "",
 					});
 				}, 3000);
+				toast({
+					title: "Message sent successfully",
+					description:
+						"Thank you for reaching out. I will get back to you as soon as possible.",
+				});
 			})
 			.catch((error) => {
 				setIsLoading(false);
 				setCurrentAnimation("idle");
 				console.log(error);
+				toast({
+					title: "Unable to send message",
+					description: "Please try again after sometime",
+					variant: "destructive",
+				});
 			});
 	};
 
