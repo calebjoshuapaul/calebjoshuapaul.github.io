@@ -6,35 +6,26 @@ import { projects } from "../constants";
 
 export default function Projects() {
 	return (
-		<section className="max-container">
+		<section className="space-section">
 			<h1 className="head-text">
-				My{" "}
+				Mission{" "}
 				<span className="blue-gradient_text font-semibold drop-shadow">
-					Projects
+					Archive
 				</span>
 			</h1>
-			<div className="mt-5 flex flex-col gap-3 text-slate-500">
+			<div className="mt-5 max-w-4xl space-y-3 font-barlow text-2xl uppercase tracking-[0.08em] text-slate-300">
 				<p>
-					Over the years, I have had the privilege of working on a diverse array
-					of projects that have significantly contributed to my professional
-					growth and expertise. These projects span various industries and
-					disciplines, each presenting unique challenges and opportunities for
-					innovation. From leading a team in developing a cutting-edge software
-					application that streamlined business processes, to collaborating on a
-					community outreach initiative aimed at improving local infrastructure,
-					my experiences have been both enriching and multifaceted. Each project
-					has not only honed my technical skills but also enhanced my ability to
-					work collaboratively, manage time effectively, and adapt to evolving
-					project requirements.
+					Selected product and web builds, from control consoles to data-driven
+					applications and shipping-ready user interfaces.
 				</p>
 			</div>
 
 			<div className="my-20 flex flex-wrap gap-16">
 				{projects.map((project) => (
-					<div className="w-full lg:w-[400px]" key={project.name}>
+					<div className="space-card w-full lg:w-[400px]" key={project.name}>
 						<div className="block-container h-12 w-12">
 							<div className={`btn-back rounded-xl ${project.theme}`} />
-							<div className="btn-front flex items-center justify-center rounded-xl">
+							<div className="btn-front flex items-center justify-center rounded-xl border border-yellow-500/15">
 								<img
 									src={project.iconUrl}
 									alt="Project Icon"
@@ -43,23 +34,25 @@ export default function Projects() {
 							</div>
 						</div>
 						<div className="mt-5 flex flex-col">
-							<h4 className="font-poppins text-2xl font-semibold">
+							<h4 className="font-orbitron text-2xl font-semibold uppercase tracking-[0.12em] text-yellow-100">
 								{project.name}
 							</h4>
-							<p className="mt-2 text-slate-500">{project.description}</p>
-							<div className="mt-5 flex items-center gap-2 font-poppins">
+							<p className="mt-4 font-barlow text-xl uppercase leading-7 tracking-[0.08em] text-slate-300/80">
+								{project.description}
+							</p>
+							<div className="mt-6 flex items-center gap-2 font-barlow text-lg uppercase tracking-[0.28em]">
 								<Link
 									to={project.link}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="font-semibold"
+									className="text-yellow-300 transition-colors hover:text-yellow-100"
 								>
-									Link
+									Inspect
 								</Link>
 								<img
 									src={arrow}
 									alt="arrow"
-									className="h-4 w-4 object-contain"
+									className="space-arrow h-4 w-4 object-contain"
 								/>
 							</div>
 						</div>
@@ -67,7 +60,7 @@ export default function Projects() {
 				))}
 			</div>
 
-			<hr className="border-slate-200" />
+			<hr className="border-yellow-500/20" />
 
 			<Cta />
 		</section>

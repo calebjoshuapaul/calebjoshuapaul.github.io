@@ -8,7 +8,7 @@ import Projects from "./pages/projects";
 
 export default function App() {
 	return (
-		<main className="h-full min-h-[100vh] bg-slate-300/20">
+		<main className="site-shell">
 			<Router>
 				<Navbar />
 				<Routes>

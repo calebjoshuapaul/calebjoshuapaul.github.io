@@ -1,6 +1,6 @@
 import { useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
 import type { ThreeElements } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { useMemo } from "react";
 
 const deathStarUrl = new URL("../assets/3d/death_star.glb", import.meta.url)
@@ -16,6 +16,10 @@ export default function SolarSystem(props: ThreeElements["group"]) {
 
 	return (
 		<group {...props}>
+			<mesh rotation={[Math.PI / 2, 0, 0]}>
+				<ringGeometry args={[7.8, 11.6, 72]} />
+				<meshBasicMaterial color="#f59e0b" opacity={0.14} transparent />
+			</mesh>
 			<primitive object={scene} />
 		</group>
 	);

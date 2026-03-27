@@ -1,21 +1,25 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import arrow from "../assets/icons/arrow.svg";
-
 type InfoBoxProps = {
+	eyebrow: string;
 	text: string;
 	link: string;
 	btnText: string;
 };
 
-function InfoBox({ text, link, btnText }: InfoBoxProps) {
+function InfoBox({ eyebrow, text, link, btnText }: InfoBoxProps) {
 	return (
 		<div className="info-box">
-			<p className="text-center font-medium sm:text-xl">{text}</p>
-			<Link className="neo-brutalism-white neo-btn" to={link}>
+			<p className="font-barlow text-sm uppercase tracking-[0.45em] text-yellow-400/70">
+				{eyebrow}
+			</p>
+			<p className="text-center font-barlow text-2xl uppercase tracking-[0.12em] text-slate-100 sm:text-3xl">
+				{text}
+			</p>
+			<Link className="neo-btn" to={link}>
 				{btnText}
-				<img src={arrow} alt="arrow" className="h-4 w-4 object-contain" />
+				<span aria-hidden="true">{" >"}</span>
 			</Link>
 		</div>
 	);
@@ -23,36 +27,43 @@ function InfoBox({ text, link, btnText }: InfoBoxProps) {
 
 const renderContent: Record<number, ReactNode> = {
 	1: (
-		<div className="neo-brutalism-blue">
-			<h1 className="mx-5 px-8 py-4 text-center text-white sm:text-xl sm:leading-snug">
-				Hi, I am <span className="font-semibold">Caleb</span>👋
-				<br />A Software Engineer from Bangalore
-			</h1>
-			<p className="text-center text-xs font-semibold text-white/70">
-				(Hint: Use arrow keys or mouse to navigate)
+		<div className="info-box">
+			<p className="font-barlow text-sm uppercase tracking-[0.5em] text-yellow-400/70">
+				Flight Deck
 			</p>
-			<br />
+			<h1 className="text-center font-orbitron text-3xl uppercase tracking-[0.14em] text-yellow-100 sm:text-4xl">
+				Caleb Joshua
+			</h1>
+			<p className="max-w-xl text-center font-barlow text-xl uppercase tracking-[0.12em] text-slate-200 sm:text-2xl">
+				Software engineer navigating product builds from Bangalore.
+			</p>
+			<p className="text-center font-barlow text-base uppercase tracking-[0.3em] text-slate-400">
+				Drag to steer. Hold thrust. Stay outside the station hull.
+			</p>
 		</div>
 	),
 	2: (
 		<InfoBox
-			text="A web enthusiast who is keen on learning everything related to the web"
+			eyebrow="Sector Two"
+			text="Pilot dossier, skills, and service record."
 			link={"/about"}
-			btnText={"Learn More"}
+			btnText={"Enter About"}
 		/>
 	),
 	3: (
 		<InfoBox
-			text="Worked on a lot of projects and have a lot of experience in web development"
+			eyebrow="Sector Three"
+			text="Mission archive with selected builds and launches."
 			link={"/projects"}
-			btnText={"View my projects"}
+			btnText={"Open Projects"}
 		/>
 	),
 	4: (
 		<InfoBox
-			text="Need a project done or looking for a dev? I'm just a few keystrokes away."
+			eyebrow="Sector Four"
+			text="Transmit a brief when you need a pilot on the build."
 			link={"/contact"}
-			btnText={"Let's talk"}
+			btnText={"Open Contact"}
 		/>
 	),
 };

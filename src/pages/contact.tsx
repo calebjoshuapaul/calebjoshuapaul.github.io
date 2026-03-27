@@ -81,16 +81,20 @@ export default function Contact() {
 	};
 
 	return (
-		<section className="relative flex max-container flex-col lg:flex-row">
-			<div className="flex min-w-[50%] flex-1 flex-col">
+		<section className="space-section relative flex flex-col gap-10 lg:flex-row">
+			<div className="space-card flex min-w-[50%] flex-1 flex-col">
 				<h1 className="head-text">Get in Touch</h1>
+				<p className="mt-5 max-w-2xl font-barlow text-2xl uppercase tracking-[0.08em] text-slate-300">
+					Send a transmission for collaborations, product work, or a build that
+					needs a sharper cockpit.
+				</p>
 
 				<form
 					className="mt-14 flex w-full flex-col gap-7"
 					onSubmit={handleSubmit}
 					ref={formRef}
 				>
-					<label className="font-semibold text-black-500">
+					<label className="font-barlow text-lg uppercase tracking-[0.28em] text-yellow-100">
 						Name
 						<input
 							type="text"
@@ -104,7 +108,7 @@ export default function Contact() {
 							onBlur={handleBlur}
 						/>
 					</label>
-					<label className="font-semibold text-black-500">
+					<label className="font-barlow text-lg uppercase tracking-[0.28em] text-yellow-100">
 						Email
 						<input
 							type="email"
@@ -118,7 +122,7 @@ export default function Contact() {
 							onBlur={handleBlur}
 						/>
 					</label>
-					<label className="font-semibold text-black-500">
+					<label className="font-barlow text-lg uppercase tracking-[0.28em] text-yellow-100">
 						Message
 						<textarea
 							name="message"
@@ -142,7 +146,7 @@ export default function Contact() {
 					</button>
 				</form>
 			</div>
-			<div className="h-[350px] w-full md:h-[550px] lg:h-auto lg:w-1/2">
+			<div className="space-card h-[350px] w-full overflow-hidden md:h-[550px] lg:h-auto lg:w-1/2">
 				<Canvas
 					camera={{
 						position: [0, 0, 5],
@@ -151,8 +155,13 @@ export default function Contact() {
 						far: 1000,
 					}}
 				>
-					<directionalLight intensity={2.5} position={[0, 0, 1]} />
-					<ambientLight intensity={0.5} />
+					<color attach="background" args={["#050914"]} />
+					<directionalLight
+						intensity={2.8}
+						position={[1, 1, 2]}
+						color="#ffe08a"
+					/>
+					<ambientLight intensity={0.65} color="#93c5fd" />
 					<Suspense fallback={<Loader />}>
 						<Fox
 							position={[0.5, 0.35, 0]}

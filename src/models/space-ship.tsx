@@ -20,6 +20,12 @@ export default function SpaceShip({
 
 	return (
 		<group ref={shipRef} scale={scale} position={position}>
+			<pointLight
+				color="#f97316"
+				distance={18}
+				intensity={2.8}
+				position={[0, 0.4, 2.4]}
+			/>
 			<primitive object={scene} />
 		</group>
 	);

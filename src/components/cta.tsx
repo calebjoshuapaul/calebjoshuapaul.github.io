@@ -4,11 +4,11 @@ export default function Cta() {
 	return (
 		<section className="cta">
 			<p className="cta-text">
-				Have a project in mind? <br className="hidden sm:block" />
-				Let's build something together!
+				Have a mission in mind? <br className="hidden sm:block" />
+				Open a transmission and let&apos;s build it.
 			</p>
 			<Link to={"/contact"} className="btn">
-				Contact
+				Open Channel
 			</Link>
 		</section>
 	);

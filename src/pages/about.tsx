@@ -9,18 +9,18 @@ import { experiences, skills } from "../constants";
 
 export default function About() {
 	return (
-		<section className="max-container">
+		<section className="space-section">
 			<h1 className="head-text">
-				Hello I'm{" "}
+				Pilot{" "}
 				<span className="blue-gradient_text font-semibold drop-shadow">
 					Caleb Joshua
 				</span>
 			</h1>
 
-			<div className="mt-5 flex flex-col gap-3 text-slate-500">
+			<div className="mt-5 max-w-3xl space-y-3 font-barlow text-2xl uppercase tracking-[0.08em] text-slate-300">
 				<p>
-					A Javascript developer based in Bangalore with a strong interest in
-					projects that require both conceptual and analytical thinking.
+					JavaScript engineer focused on product delivery, interface systems,
+					and interactive experiences that feel deliberate instead of generic.
 				</p>
 			</div>
 
@@ -31,7 +31,7 @@ export default function About() {
 						<div className="flex flex-col gap-3" key={skill.name}>
 							<div className="block-container h-20 w-20">
 								<div className="btn-back rounded-xl" />
-								<div className="btn-front flex items-center justify-center rounded-xl">
+								<div className="btn-front flex items-center justify-center rounded-xl border border-yellow-500/15">
 									<img
 										src={skill.imageUrl}
 										alt={skill.name}
@@ -39,7 +39,9 @@ export default function About() {
 									/>
 								</div>
 							</div>
-							<p className="font-semibold">{skill.name}</p>
+							<p className="font-barlow text-lg uppercase tracking-[0.25em] text-slate-200">
+								{skill.name}
+							</p>
 						</div>
 					))}
 				</div>
@@ -47,16 +49,10 @@ export default function About() {
 
 			<div className="py-16">
 				<h3 className="subhead-text">Work Experience</h3>
-				<div className="mt-5 flex flex-col gap-3 text-slate-500">
+				<div className="mt-5 max-w-4xl space-y-3 font-barlow text-2xl uppercase tracking-[0.08em] text-slate-300">
 					<p>
-						Passionate and results-driven frontend engineer with nearly 2 years
-						of delivering high-quality web applications. Demonstrated ability to
-						craft intuitive and efficient user interfaces, enhancing user
-						engagement and satisfaction. Specializes in collaborative
-						environments, contributing expertise while embracing continuous
-						learning and innovation. Proactive mindset and commitment to
-						excellence poised to tackle new challenges and drive meaningful
-						contributions to dynamic teams and projects.
+						Frontend and product engineering experience across mission planning,
+						analytics, collaboration surfaces, and production web systems.
 					</p>
 				</div>
 
@@ -77,17 +73,18 @@ export default function About() {
 								}
 								iconStyle={{ backgroundColor: experience.iconBg }}
 								contentStyle={{
-									borderBottom: "8px",
-									borderStyle: "solid",
-									borderBottomColor: experience.iconBg,
-									boxShadow: "none",
+									background: "rgba(7, 12, 23, 0.88)",
+									border: "1px solid rgba(245, 211, 107, 0.18)",
+									borderBottom: "6px solid rgba(245, 211, 107, 0.55)",
+									boxShadow: "0 20px 50px rgba(0, 0, 0, 0.28)",
+									color: "#e2e8f0",
 								}}
 							>
 								<div>
-									<h3 className="font-poppins text-xl font-semibold text-black">
+									<h3 className="font-orbitron text-xl font-semibold uppercase tracking-[0.14em] text-yellow-100">
 										{experience.title}
 									</h3>
-									<p className="m-0 font-base font-medium text-black-500">
+									<p className="m-0 font-barlow text-lg uppercase tracking-[0.18em] text-slate-300">
 										{experience.companyName}
 									</p>
 								</div>
@@ -95,7 +92,7 @@ export default function About() {
 									{experience.points.map((point) => (
 										<li
 											key={`${experience.title}-${point}`}
-											className="pl-1 text-sm font-normal text-black-500/50"
+											className="pl-1 font-barlow text-lg text-slate-300/80"
 										>
 											{point}
 										</li>
@@ -106,7 +103,7 @@ export default function About() {
 					</VerticalTimeline>
 				</div>
 			</div>
-			<hr className="border-slate-200" />
+			<hr className="border-yellow-500/20" />
 			<Cta />
 		</section>
 	);
