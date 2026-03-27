@@ -24,9 +24,3 @@ bun run preview
 bun run lint
 bun run format
 ```
-
-## Migration notes
-
-- ESLint was removed in favor of Biome.
-- TypeScript support is enabled without forcing full conversion.
-- Existing `.js/.jsx` files continue to work while new code can be added as `.ts/.tsx`.

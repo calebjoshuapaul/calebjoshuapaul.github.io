@@ -10,7 +10,7 @@ import {
 
 import Loader from "../components/loader";
 import { useToast } from "../components/ui/use-toast";
-import Fox from "../models/Fox";
+import Fox from "../models/fox";
 
 type ContactForm = {
 	name: string;

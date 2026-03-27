@@ -20,7 +20,6 @@ import sass from "./sass.svg";
 import nextconsole from "./summiz.svg";
 import tailwindcss from "./tailwindcss.svg";
 import spaceXlog from "./threads.svg";
-import twitter from "./twitter.svg";
 import typescript from "./typescript.svg";
 
 export {
@@ -46,6 +45,5 @@ export {
 	sass,
 	spaceXlog,
 	tailwindcss,
-	twitter,
 	typescript,
 };

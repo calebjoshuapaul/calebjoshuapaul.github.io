@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noUnknownAtRules: external library */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -249,6 +250,14 @@ body:has(.card[data-color="green"]:hover) {
 		1vmin 1vmin #d2e4ff,
 		0.65vmin 1vmin #d2e4ff,
 		1vmin 0.65vmin #d2e4ff;
+}
+
+.warp-overlay {
+	background: radial-gradient(
+		circle at center,
+		rgba(148, 163, 184, 0.28),
+		rgba(15, 23, 42, 0.82)
+	);
 }
 
 @layer base {
