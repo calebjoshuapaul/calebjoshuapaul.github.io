@@ -38,7 +38,7 @@ const renderContent: Record<number, ReactNode> = {
 				Software engineer navigating product builds from Bangalore.
 			</p>
 			<p className="text-center font-barlow text-base uppercase tracking-[0.3em] text-slate-400">
-				Drag to steer. Hold thrust. Stay outside the station hull.
+				Arrow keys rotate. Space thrusts. Drag to inspect the sector.
 			</p>
 		</div>
 	),

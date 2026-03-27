@@ -6,7 +6,7 @@ import { Vector3 } from "three";
 
 type SpaceFlightControllerProps = {
 	shipRef: RefObject<Group | null>;
-	planetStops: Vector3Tuple[];
+	planetStopsRef: { current: Vector3Tuple[] };
 	planetCenter: Vector3Tuple;
 	planetRadius: number;
 	onStageChange: (stage: number) => void;
@@ -14,25 +14,29 @@ type SpaceFlightControllerProps = {
 };
 
 const FORWARD_ACCELERATION = 18;
-const REVERSE_ACCELERATION = 10;
-const TURN_SPEED = 2.7;
-const ROTATION_RESPONSE = 4.8;
-const MAX_SPEED = 24;
-const MAX_REVERSE_SPEED = -9;
-const DRAG_WHEN_COASTING = 0.94;
+const BRAKE_DECELERATION = 14;
+const YAW_SPEED = 1.85;
+const PITCH_SPEED = 1.4;
+const MAX_SPEED = 28;
 const WARP_DURATION_SECONDS = 0.45;
 const BOUNDS = 260;
-const CAMERA_SENSITIVITY = 0.0054;
+const CAMERA_HEIGHT = 2.6;
+const CAMERA_DISTANCE = 11;
+const CAMERA_SENSITIVITY = 0.0048;
+const CAMERA_RETURN_SPEED = 3.8;
+const CAMERA_DEFAULT_PITCH = -0.06;
 const SHIP_COLLISION_BUFFER = 2.8;
+const MAX_PITCH = 0.65;
+const MAX_CAMERA_PITCH = 0.45;
+const MIN_CAMERA_PITCH = -0.55;
+const BANK_ANGLE = 0.28;
 
 const clamp = (value: number, min: number, max: number) =>
 	Math.max(min, Math.min(max, value));
-const normalizeAngle = (angle: number) =>
-	Math.atan2(Math.sin(angle), Math.cos(angle));
 
 export default function SpaceFlightController({
 	shipRef,
-	planetStops,
+	planetStopsRef,
 	planetCenter,
 	planetRadius,
 	onStageChange,
@@ -45,11 +49,18 @@ export default function SpaceFlightController({
 	const currentStage = useRef(1);
 	const cameraTarget = useRef(new Vector3(0, 0, 0));
 	const currentSpeed = useRef(0);
-	const steerYaw = useRef(0);
-	const cameraPitch = useRef(-0.22);
+	const shipYaw = useRef(0);
+	const shipPitch = useRef(0);
+	const shipBank = useRef(0);
+	const cameraYawOffset = useRef(0);
+	const cameraPitchOffset = useRef(CAMERA_DEFAULT_PITCH);
 	const collisionCenter = useRef(new Vector3(...planetCenter));
 	const nextPosition = useRef(new Vector3());
 	const collisionNormal = useRef(new Vector3());
+	const shipForward = useRef(new Vector3(0, 0, -1));
+	const shipUp = useRef(new Vector3(0, 1, 0));
+	const shipRight = useRef(new Vector3(1, 0, 0));
+	const cameraLookDirection = useRef(new Vector3(0, 0, -1));
 	const warp = useRef<{
 		active: boolean;
 		elapsed: number;
@@ -71,6 +82,7 @@ export default function SpaceFlightController({
 
 			pressedKeys.current.add(event.key);
 
+			const planetStops = planetStopsRef.current;
 			if (!planetStops.length) return;
 
 			if (event.key === "Shift" && shipRef.current && !warp.current.active) {
@@ -105,11 +117,11 @@ export default function SpaceFlightController({
 		const handlePointerMove = (event: PointerEvent) => {
 			if (!isDragging.current) return;
 
-			steerYaw.current -= event.movementX * CAMERA_SENSITIVITY;
-			cameraPitch.current = clamp(
-				cameraPitch.current - event.movementY * CAMERA_SENSITIVITY * 0.65,
-				-0.7,
-				0.4,
+			cameraYawOffset.current -= event.movementX * CAMERA_SENSITIVITY;
+			cameraPitchOffset.current = clamp(
+				cameraPitchOffset.current - event.movementY * CAMERA_SENSITIVITY * 0.65,
+				MIN_CAMERA_PITCH,
+				MAX_CAMERA_PITCH,
 			);
 		};
 
@@ -130,7 +142,7 @@ export default function SpaceFlightController({
 			gl.domElement.removeEventListener("pointermove", handlePointerMove);
 			gl.domElement.style.cursor = "";
 		};
-	}, [gl.domElement, onWarpStateChange, planetStops, shipRef]);
+	}, [gl.domElement, onWarpStateChange, planetStopsRef, shipRef]);
 
 	useEffect(() => {
 		collisionCenter.current.set(...planetCenter);
@@ -138,9 +150,10 @@ export default function SpaceFlightController({
 
 	useFrame((_, delta) => {
 		if (!shipRef.current) return;
-		if (!planetStops.length) return;
+		const planetStops = planetStopsRef.current;
 
 		const ship = shipRef.current;
+		ship.rotation.order = "YXZ";
 
 		if (warp.current.active) {
 			warp.current.elapsed += delta;
@@ -162,54 +175,75 @@ export default function SpaceFlightController({
 			}
 		} else {
 			const keys = pressedKeys.current;
-			const isForwardPressed =
-				keys.has("ArrowUp") || keys.has("w") || keys.has("W");
-			const isReversePressed =
-				keys.has("ArrowDown") || keys.has("s") || keys.has("S");
-			const isTurnLeftPressed =
-				keys.has("ArrowLeft") || keys.has("a") || keys.has("A");
-			const isTurnRightPressed =
-				keys.has("ArrowRight") || keys.has("d") || keys.has("D");
-			const isBoostPressed = keys.has(" ");
+			const isPitchUpPressed = keys.has("ArrowUp");
+			const isPitchDownPressed = keys.has("ArrowDown");
+			const isYawLeftPressed = keys.has("ArrowLeft");
+			const isYawRightPressed = keys.has("ArrowRight");
+			const isThrustPressed = keys.has(" ");
 
-			if (isTurnLeftPressed) {
-				steerYaw.current += TURN_SPEED * delta;
-			}
-			if (isTurnRightPressed) {
-				steerYaw.current -= TURN_SPEED * delta;
-			}
-
-			const angleToTarget = normalizeAngle(steerYaw.current - ship.rotation.y);
-			ship.rotation.y += angleToTarget * Math.min(1, delta * ROTATION_RESPONSE);
-
-			if (isForwardPressed) {
-				const boostMultiplier = isBoostPressed ? 1.65 : 1;
-				currentSpeed.current = clamp(
-					currentSpeed.current + FORWARD_ACCELERATION * boostMultiplier * delta,
-					MAX_REVERSE_SPEED,
-					MAX_SPEED * boostMultiplier,
+			if (isPitchUpPressed) {
+				shipPitch.current = clamp(
+					shipPitch.current + PITCH_SPEED * delta,
+					-MAX_PITCH,
+					MAX_PITCH,
 				);
-			} else if (isReversePressed) {
+			}
+			if (isPitchDownPressed) {
+				shipPitch.current = clamp(
+					shipPitch.current - PITCH_SPEED * delta,
+					-MAX_PITCH,
+					MAX_PITCH,
+				);
+			}
+			if (isYawLeftPressed) {
+				shipYaw.current += YAW_SPEED * delta;
+			}
+			if (isYawRightPressed) {
+				shipYaw.current -= YAW_SPEED * delta;
+			}
+
+			if (isThrustPressed) {
 				currentSpeed.current = clamp(
-					currentSpeed.current - REVERSE_ACCELERATION * delta,
-					MAX_REVERSE_SPEED,
+					currentSpeed.current + FORWARD_ACCELERATION * delta,
+					0,
 					MAX_SPEED,
 				);
 			} else {
-				currentSpeed.current *= DRAG_WHEN_COASTING;
+				currentSpeed.current = Math.max(
+					0,
+					currentSpeed.current - BRAKE_DECELERATION * delta,
+				);
 			}
 
-			const forwardX = Math.sin(ship.rotation.y);
-			const forwardZ = -Math.cos(ship.rotation.y);
+			const bankTarget =
+				(isYawLeftPressed ? BANK_ANGLE : 0) +
+				(isYawRightPressed ? -BANK_ANGLE : 0);
+			shipBank.current +=
+				(bankTarget - shipBank.current) * Math.min(1, delta * 5.5);
+			ship.rotation.set(
+				shipPitch.current,
+				shipYaw.current,
+				shipBank.current,
+				"YXZ",
+			);
+
+			shipForward.current.set(0, 0, -1).applyQuaternion(ship.quaternion);
 			nextPosition.current.set(
 				clamp(
-					ship.position.x + forwardX * currentSpeed.current * delta,
+					ship.position.x +
+						shipForward.current.x * currentSpeed.current * delta,
 					-BOUNDS,
 					BOUNDS,
 				),
-				ship.position.y,
 				clamp(
-					ship.position.z + forwardZ * currentSpeed.current * delta,
+					ship.position.y +
+						shipForward.current.y * currentSpeed.current * delta,
+					-BOUNDS,
+					BOUNDS,
+				),
+				clamp(
+					ship.position.z +
+						shipForward.current.z * currentSpeed.current * delta,
 					-BOUNDS,
 					BOUNDS,
 				),
@@ -231,51 +265,79 @@ export default function SpaceFlightController({
 			}
 
 			ship.position.x = nextPosition.current.x;
+			ship.position.y = nextPosition.current.y;
 			ship.position.z = nextPosition.current.z;
 		}
 
-		let nearestIndex = 0;
-		let nearestDistance = Number.POSITIVE_INFINITY;
-		for (let i = 0; i < planetStops.length; i += 1) {
-			const stop = planetStops[i];
-			const dx = ship.position.x - stop[0];
-			const dy = ship.position.y - stop[1];
-			const dz = ship.position.z - stop[2];
-			const distance = dx * dx + dy * dy + dz * dz;
+		if (planetStops.length) {
+			let nearestIndex = 0;
+			let nearestDistance = Number.POSITIVE_INFINITY;
+			for (let i = 0; i < planetStops.length; i += 1) {
+				const stop = planetStops[i];
+				const dx = ship.position.x - stop[0];
+				const dy = ship.position.y - stop[1];
+				const dz = ship.position.z - stop[2];
+				const distance = dx * dx + dy * dy + dz * dz;
 
-			if (distance < nearestDistance) {
-				nearestDistance = distance;
-				nearestIndex = i;
+				if (distance < nearestDistance) {
+					nearestDistance = distance;
+					nearestIndex = i;
+				}
+			}
+
+			currentStopIndex.current = nearestIndex;
+			const stage = nearestIndex + 1;
+			if (stage !== currentStage.current) {
+				currentStage.current = stage;
+				onStageChange(stage);
 			}
 		}
 
-		currentStopIndex.current = nearestIndex;
-		const stage = nearestIndex + 1;
-		if (stage !== currentStage.current) {
-			currentStage.current = stage;
-			onStageChange(stage);
+		const keys = pressedKeys.current;
+		const isControlling =
+			keys.has("ArrowUp") ||
+			keys.has("ArrowDown") ||
+			keys.has("ArrowLeft") ||
+			keys.has("ArrowRight") ||
+			keys.has(" ") ||
+			currentSpeed.current > 0.15;
+
+		if (isControlling) {
+			cameraYawOffset.current +=
+				(0 - cameraYawOffset.current) *
+				Math.min(1, delta * CAMERA_RETURN_SPEED);
+			cameraPitchOffset.current +=
+				(CAMERA_DEFAULT_PITCH - cameraPitchOffset.current) *
+				Math.min(1, delta * CAMERA_RETURN_SPEED);
 		}
 
-		const cameraDistance = 12;
-		const baseHeight = 3.6;
-		const cameraForwardX = Math.sin(ship.rotation.y);
-		const cameraForwardZ = -Math.cos(ship.rotation.y);
-		const pitchOffsetY = Math.sin(cameraPitch.current) * 4;
-		const targetCameraX = ship.position.x - cameraForwardX * cameraDistance;
-		const targetCameraY = ship.position.y + baseHeight + pitchOffsetY;
-		const targetCameraZ = ship.position.z - cameraForwardZ * cameraDistance;
-		cameraTarget.current.set(targetCameraX, targetCameraY, targetCameraZ);
-		camera.position.lerp(cameraTarget.current, 0.1);
-		ship.rotation.z = clamp(
-			normalizeAngle(steerYaw.current - ship.rotation.y) * 0.45,
-			-0.38,
-			0.38,
+		shipForward.current
+			.set(0, 0, -1)
+			.applyQuaternion(ship.quaternion)
+			.normalize();
+		shipUp.current.set(0, 1, 0).applyQuaternion(ship.quaternion).normalize();
+		shipRight.current.set(1, 0, 0).applyQuaternion(ship.quaternion).normalize();
+
+		cameraLookDirection.current.copy(shipForward.current);
+		cameraLookDirection.current.applyAxisAngle(
+			shipUp.current,
+			cameraYawOffset.current,
 		);
-		ship.position.y = Math.sin(performance.now() * 0.0025) * 0.35;
+		cameraLookDirection.current.applyAxisAngle(
+			shipRight.current,
+			cameraPitchOffset.current,
+		);
+		cameraLookDirection.current.normalize();
+
+		cameraTarget.current
+			.copy(ship.position)
+			.addScaledVector(cameraLookDirection.current, -CAMERA_DISTANCE)
+			.addScaledVector(shipUp.current, CAMERA_HEIGHT);
+		camera.position.lerp(cameraTarget.current, 0.1);
 		camera.lookAt(
-			ship.position.x + cameraForwardX * 18,
-			ship.position.y + 1.5 + pitchOffsetY * 0.35,
-			ship.position.z + cameraForwardZ * 18,
+			ship.position.x + cameraLookDirection.current.x * 18,
+			ship.position.y + cameraLookDirection.current.y * 18,
+			ship.position.z + cameraLookDirection.current.z * 18,
 		);
 	});
 
