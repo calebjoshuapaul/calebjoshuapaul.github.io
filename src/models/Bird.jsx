@@ -1,7 +1,7 @@
 import { useAnimations, useGLTF } from "@react-three/drei";
-import birdScene from "../assets/3d/bird.glb";
-import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
+import { useEffect, useRef } from "react";
+import birdScene from "../assets/3d/bird.glb";
 
 function Bird() {
 	const ref = useRef();
@@ -31,11 +31,7 @@ function Bird() {
 	});
 
 	return (
-		<mesh
-			ref={ref}
-			position={[-5, 2, 1]}
-			scale={[0.003, 0.003, 0.003]}
-		>
+		<mesh ref={ref} position={[-5, 2, 1]} scale={[0.003, 0.003, 0.003]}>
 			<primitive object={scene} />
 		</mesh>
 	);

@@ -4,8 +4,8 @@ import {
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 
-import { experiences, skills } from "../constants";
 import CTA from "../components/CTA";
+import { experiences, skills } from "../constants";
 
 function About() {
 	return (
@@ -28,10 +28,7 @@ function About() {
 				<h3 className="subhead-text">My Skills</h3>
 				<div className="mt-16 flex flex-wrap gap-12">
 					{skills.map((skill) => (
-						<div
-							className="flex flex-col gap-3"
-							key={skill.name}
-						>
+						<div className="flex flex-col gap-3" key={skill.name}>
 							<div className="block-container w-20 h-20">
 								<div className="btn-back rounded-xl" />
 								<div className="btn-front rounded-xl flex justify-center items-center">

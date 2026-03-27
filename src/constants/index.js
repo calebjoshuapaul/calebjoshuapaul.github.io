@@ -1,8 +1,8 @@
-import thinkusable_logo from "../assets/images/thinkusable.png";
-import urbanmatrix_logo from "../assets/images/urbanmatrix_logo.png";
 import {
 	contact,
+	cryptotracker,
 	css,
+	ecommsite,
 	express,
 	git,
 	github,
@@ -12,18 +12,18 @@ import {
 	mongodb,
 	motion,
 	mui,
+	nextconsole,
 	nextjs,
 	nodejs,
 	react,
 	redux,
 	sass,
+	spaceXlog,
 	tailwindcss,
 	typescript,
-	ecommsite,
-	spaceXlog,
-	cryptotracker,
-	nextconsole,
 } from "../assets/icons";
+import thinkusable_logo from "../assets/images/thinkusable.png";
+import urbanmatrix_logo from "../assets/images/urbanmatrix_logo.png";
 
 export const skills = [
 	{

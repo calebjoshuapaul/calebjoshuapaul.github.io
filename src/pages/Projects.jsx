@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { projects } from "../constants";
 import { arrow } from "../assets/icons";
 import CTA from "../components/CTA";
+import { projects } from "../constants";
 
 function Projects() {
 	return (
@@ -31,10 +31,7 @@ function Projects() {
 			<div className="flex flex-wrap my-20 gap-16">
 				{projects.map((project) => {
 					return (
-						<div
-							className="lg:w-[400px] w-full"
-							key={project.name}
-						>
+						<div className="lg:w-[400px] w-full" key={project.name}>
 							<div className="block-container w-12 h-12">
 								<div className={`btn-back rounded-xl ${project.theme}`}></div>
 								<div className="btn-front rounded-xl flex justify-center items-center">

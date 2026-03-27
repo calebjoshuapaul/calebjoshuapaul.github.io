@@ -1,11 +1,9 @@
 import emailjs from "@emailjs/browser";
-import { Suspense, useRef, useState } from "react";
-
 import { Canvas } from "@react-three/fiber";
-
-import Fox from "../models/Fox";
+import { Suspense, useRef, useState } from "react";
 import Loader from "../components/Loader";
 import { useToast } from "../components/ui/use-toast";
+import Fox from "../models/Fox";
 
 function Contact() {
 	const formRef = useRef(null);
@@ -45,7 +43,7 @@ function Contact() {
 					to_email: import.meta.env.VITE_APP_MY_EMAIL,
 					message: form.message,
 				},
-				import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY
+				import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY,
 			)
 			.then(() => {
 				setIsLoading(false);
@@ -85,10 +83,7 @@ function Contact() {
 					onSubmit={handleSubmit}
 					ref={formRef}
 				>
-					<label
-						className="text-black-500 font-semibold"
-						htmlFor=""
-					>
+					<label className="text-black-500 font-semibold" htmlFor="">
 						Name
 						<input
 							type="text"
@@ -102,10 +97,7 @@ function Contact() {
 							onBlur={handleBlur}
 						/>
 					</label>
-					<label
-						className="text-black-500 font-semibold"
-						htmlFor=""
-					>
+					<label className="text-black-500 font-semibold" htmlFor="">
 						Email
 						<input
 							type="email"
@@ -119,10 +111,7 @@ function Contact() {
 							onBlur={handleBlur}
 						/>
 					</label>
-					<label
-						className="text-black-500 font-semibold"
-						htmlFor=""
-					>
+					<label className="text-black-500 font-semibold" htmlFor="">
 						Message
 						<textarea
 							name="message"
@@ -155,10 +144,7 @@ function Contact() {
 						far: 1000,
 					}}
 				>
-					<directionalLight
-						intensity={2.5}
-						position={[0, 0, 1]}
-					/>
+					<directionalLight intensity={2.5} position={[0, 0, 1]} />
 					<ambientLight intensity={0.5} />
 					<Suspense fallback={<Loader />}>
 						<Fox
