@@ -11,9 +11,18 @@ type SpaceFlightControllerProps = {
 	onWarpStateChange: (isWarping: boolean) => void;
 };
 
-const NORMAL_SPEED = 8;
+const FORWARD_ACCELERATION = 22;
+const TURN_SPEED = 2.2;
+const MAX_SPEED = 20;
+const DRAG_WHEN_COASTING = 0.92;
 const WARP_DURATION_SECONDS = 0.45;
-const BOUNDS = 120;
+const BOUNDS = 260;
+const CAMERA_SENSITIVITY = 0.0032;
+
+const clamp = (value: number, min: number, max: number) =>
+	Math.max(min, Math.min(max, value));
+const normalizeAngle = (angle: number) =>
+	Math.atan2(Math.sin(angle), Math.cos(angle));
 
 export default function SpaceFlightController({
 	shipRef,
@@ -26,6 +35,9 @@ export default function SpaceFlightController({
 	const currentStopIndex = useRef(0);
 	const currentStage = useRef(1);
 	const cameraTarget = useRef(new Vector3(0, 0, 0));
+	const currentSpeed = useRef(0);
+	const cameraYaw = useRef(0);
+	const cameraPitch = useRef(-0.22);
 	const warp = useRef<{
 		active: boolean;
 		elapsed: number;
@@ -69,13 +81,23 @@ export default function SpaceFlightController({
 		const handleKeyUp = (event: KeyboardEvent) => {
 			pressedKeys.current.delete(event.key);
 		};
+		const handleMouseMove = (event: MouseEvent) => {
+			cameraYaw.current -= event.movementX * CAMERA_SENSITIVITY;
+			cameraPitch.current = clamp(
+				cameraPitch.current - event.movementY * CAMERA_SENSITIVITY * 0.65,
+				-0.7,
+				0.4,
+			);
+		};
 
 		window.addEventListener("keydown", handleKeyDown);
 		window.addEventListener("keyup", handleKeyUp);
+		window.addEventListener("mousemove", handleMouseMove);
 
 		return () => {
 			window.removeEventListener("keydown", handleKeyDown);
 			window.removeEventListener("keyup", handleKeyUp);
+			window.removeEventListener("mousemove", handleMouseMove);
 		};
 	}, [onWarpStateChange, planetStops, shipRef]);
 
@@ -104,31 +126,46 @@ export default function SpaceFlightController({
 				onWarpStateChange(false);
 			}
 		} else {
-			let moveX = 0;
-			let moveZ = 0;
 			const keys = pressedKeys.current;
+			const isForwardPressed =
+				keys.has("ArrowUp") || keys.has("w") || keys.has("W");
+			const isTurnLeftPressed =
+				keys.has("ArrowLeft") || keys.has("a") || keys.has("A");
+			const isTurnRightPressed =
+				keys.has("ArrowRight") || keys.has("d") || keys.has("D");
 
-			if (keys.has("ArrowUp") || keys.has("w") || keys.has("W")) moveZ -= 1;
-			if (keys.has("ArrowDown") || keys.has("s") || keys.has("S")) moveZ += 1;
-			if (keys.has("ArrowLeft") || keys.has("a") || keys.has("A")) moveX -= 1;
-			if (keys.has("ArrowRight") || keys.has("d") || keys.has("D")) moveX += 1;
-
-			if (moveX !== 0 || moveZ !== 0) {
-				const length = Math.hypot(moveX, moveZ) || 1;
-				const vx = (moveX / length) * NORMAL_SPEED * delta;
-				const vz = (moveZ / length) * NORMAL_SPEED * delta;
-
-				ship.position.x = Math.max(
-					-BOUNDS,
-					Math.min(BOUNDS, ship.position.x + vx),
-				);
-				ship.position.z = Math.max(
-					-BOUNDS,
-					Math.min(BOUNDS, ship.position.z + vz),
-				);
-
-				ship.rotation.y = Math.atan2(moveX, -moveZ);
+			if (isTurnLeftPressed) {
+				ship.rotation.y += TURN_SPEED * delta;
 			}
+			if (isTurnRightPressed) {
+				ship.rotation.y -= TURN_SPEED * delta;
+			}
+
+			const angleToCamera = normalizeAngle(cameraYaw.current - ship.rotation.y);
+			ship.rotation.y += angleToCamera * Math.min(1, delta * 2.8);
+
+			if (isForwardPressed) {
+				currentSpeed.current = clamp(
+					currentSpeed.current + FORWARD_ACCELERATION * delta,
+					0,
+					MAX_SPEED,
+				);
+			} else {
+				currentSpeed.current *= DRAG_WHEN_COASTING;
+			}
+
+			const forwardX = Math.sin(cameraYaw.current);
+			const forwardZ = -Math.cos(cameraYaw.current);
+			ship.position.x = clamp(
+				ship.position.x + forwardX * currentSpeed.current * delta,
+				-BOUNDS,
+				BOUNDS,
+			);
+			ship.position.z = clamp(
+				ship.position.z + forwardZ * currentSpeed.current * delta,
+				-BOUNDS,
+				BOUNDS,
+			);
 		}
 
 		let nearestIndex = 0;
@@ -153,12 +190,21 @@ export default function SpaceFlightController({
 			onStageChange(stage);
 		}
 
-		const targetCameraX = ship.position.x;
-		const targetCameraY = ship.position.y + 2.8;
-		const targetCameraZ = ship.position.z + 8;
+		const cameraDistance = 10;
+		const baseHeight = 2.8;
+		const cameraForwardX = Math.sin(cameraYaw.current);
+		const cameraForwardZ = -Math.cos(cameraYaw.current);
+		const pitchOffsetY = Math.sin(cameraPitch.current) * 4;
+		const targetCameraX = ship.position.x - cameraForwardX * cameraDistance;
+		const targetCameraY = ship.position.y + baseHeight + pitchOffsetY;
+		const targetCameraZ = ship.position.z - cameraForwardZ * cameraDistance;
 		cameraTarget.current.set(targetCameraX, targetCameraY, targetCameraZ);
-		camera.position.lerp(cameraTarget.current, 0.08);
-		camera.lookAt(ship.position.x, ship.position.y, ship.position.z);
+		camera.position.lerp(cameraTarget.current, 0.1);
+		camera.lookAt(
+			ship.position.x + cameraForwardX * 18,
+			ship.position.y + 1.5 + pitchOffsetY * 0.35,
+			ship.position.z + cameraForwardZ * 18,
+		);
 	});
 
 	return null;

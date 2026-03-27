@@ -17,16 +17,16 @@ export default function Home() {
 
 	const planetStops = useMemo<Vec3[]>(
 		() => [
-			[24, 0, 0],
-			[5, 0, -32],
-			[-24, 0, -6],
-			[18, 0, 30],
+			[0, 0, -70],
+			[42, 0, -40],
+			[-40, 0, -30],
+			[-58, 0, -95],
 		],
 		[],
 	);
 
 	return (
-		<section className="relative h-screen w-full">
+		<section className="relative h-screen w-full bg-slate-950">
 			<div className="absolute left-0 right-0 top-28 z-10 flex items-center justify-center">
 				{currentStage && <HomeInfo currentStage={currentStage} />}
 			</div>
@@ -41,11 +41,18 @@ export default function Home() {
 				camera={{ near: 0.1, far: 1000, position: [0, 3, 10] }}
 			>
 				<Suspense fallback={<Loader />}>
-					<ambientLight intensity={0.35} />
-					<pointLight position={[0, 0, 0]} intensity={6} color="#f8fafc" />
-					<directionalLight position={[15, 8, 5]} intensity={1.2} />
-					<SolarSystem scale={[0.12, 0.12, 0.12]} position={[0, -2, 0]} />
-					<SpaceShip shipRef={shipRef} scale={[0.02, 0.02, 0.02]} />
+					<color attach="background" args={["#020b1a"]} />
+					<ambientLight intensity={0.38} />
+					<hemisphereLight intensity={0.35} groundColor="#020617" />
+					<pointLight position={[0, 12, 0]} intensity={14} color="#fef3c7" />
+					<pointLight position={[28, -8, 18]} intensity={4} color="#ef4444" />
+					<directionalLight position={[-24, 16, -14]} intensity={0.95} />
+					<SolarSystem scale={[3, 3, 3]} position={[0, -2.5, -70]} />
+					<SpaceShip
+						shipRef={shipRef}
+						scale={[0.12, 0.12, 0.12]}
+						position={[18, 0, 14]}
+					/>
 					<SpaceFlightController
 						shipRef={shipRef}
 						planetStops={planetStops}

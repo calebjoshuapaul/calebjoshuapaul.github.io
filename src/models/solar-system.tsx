@@ -1,11 +1,18 @@
 import { useGLTF } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 import type { ThreeElements } from "@react-three/fiber";
+import { useMemo } from "react";
 
-const solarSystemUrl = new URL("../assets/3d/solar_system.glb", import.meta.url)
+const deathStarUrl = new URL("../assets/3d/death_star.glb", import.meta.url)
 	.href;
 
 export default function SolarSystem(props: ThreeElements["group"]) {
-	const { scene } = useGLTF(solarSystemUrl);
+	const { scene } = useGLTF(deathStarUrl);
+	const rotationSpeed = useMemo(() => 0.12, []);
+
+	useFrame((_, delta) => {
+		scene.rotation.y += delta * rotationSpeed;
+	});
 
 	return (
 		<group {...props}>
@@ -14,4 +21,4 @@ export default function SolarSystem(props: ThreeElements["group"]) {
 	);
 }
 
-useGLTF.preload(solarSystemUrl);
+useGLTF.preload(deathStarUrl);
